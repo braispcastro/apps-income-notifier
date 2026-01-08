@@ -3,7 +3,7 @@ FROM oven/bun:1.0-slim as base
 WORKDIR /app
 
 # Install dependencies
-COPY package.json bun.lock ./
+COPY package.json ./
 RUN bun install --production
 
 # Copy source code
