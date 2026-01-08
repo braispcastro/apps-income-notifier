@@ -1,0 +1,10 @@
+services:
+  notifier:
+    build: .
+    container_name: admob-income-notifier
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro

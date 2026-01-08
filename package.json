@@ -1,0 +1,22 @@
+{
+  "name": "apps-income-notifier",
+  "module": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "dry-run": "DRY_RUN=true bun run src/index.ts",
+    "auth": "bun run src/auth-helper.ts"
+  },
+  "dependencies": {
+    "@googleapis/admob": "^6.0.1",
+    "axios": "^1.6.2",
+    "dotenv": "^16.3.1",
+    "google-auth-library": "^9.4.1",
+    "node-cron": "^3.0.3"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/dotenv": "^8.2.3",
+    "@types/node-cron": "^3.0.11"
+  }
+}

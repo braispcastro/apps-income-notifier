@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+.bun/
+bun.lockb
+
+# Environment variables
+.env
+.env.local
+
+# Build output
+dist/
+out/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
