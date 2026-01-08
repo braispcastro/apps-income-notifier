@@ -1,10 +1,13 @@
 # Use the official Bun image
-FROM oven/bun:1.0-slim as base
+FROM oven/bun:latest as base
 WORKDIR /app
 
+# Disable CI mode to prevent forced frozen lockfile issues
+ENV CI=0
+
 # Install dependencies
-COPY package.json ./
-RUN bun install --production --no-frozen-lockfile
+COPY package.json bun.lock ./
+RUN bun install --production
 
 # Copy source code
 COPY src ./src
