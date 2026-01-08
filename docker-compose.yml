@@ -2,7 +2,7 @@ services:
   notifier:
     build: .
     image: apps-income-notifier
-    container_name: admob-income-notifier
+    container_name: apps-income-notifier
     restart: unless-stopped
     env_file:
       - .env
