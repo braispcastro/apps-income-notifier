@@ -1,6 +1,7 @@
 services:
   notifier:
     build: .
+    image: apps-income-notifier
     container_name: admob-income-notifier
     restart: unless-stopped
     env_file:
