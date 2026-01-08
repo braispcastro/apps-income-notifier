@@ -1,7 +1,7 @@
 services:
   notifier:
     build: .
-    image: apps-income-notifier
+    image: braispcastro/apps-income-notifier
     container_name: apps-income-notifier
     restart: unless-stopped
     env_file:
