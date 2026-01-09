@@ -10,8 +10,6 @@ const ACCOUNT_ID = process.env.AD_MOB_ACCOUNT_ID;
 const auth = new OAuth2Client(CLIENT_ID, CLIENT_SECRET);
 auth.setCredentials({ refresh_token: REFRESH_TOKEN });
 
-const admobClient = admob({ version: 'v1', auth });
-
 export async function getDailyEarnings() {
     if (!ACCOUNT_ID) throw new Error('AD_MOB_ACCOUNT_ID is not set');
 
@@ -22,6 +20,10 @@ export async function getDailyEarnings() {
     const dateStr = formatDate(yesterday);
 
     try {
+        // Explicitly get a token to ensure the header is present
+        const headers = await auth.getRequestHeaders();
+        const admobClient = admob({ version: 'v1', auth });
+
         const response = await admobClient.accounts.networkReport.generate({
             parent: `accounts/${ACCOUNT_ID}`,
             requestBody: {
@@ -34,6 +36,8 @@ export async function getDailyEarnings() {
                     // Optional: Add dimensions like 'DATE' if you want a more detailed breakdown
                 },
             },
+        }, {
+            headers: headers as any
         });
 
         const reportData = response.data as any[];
@@ -64,5 +68,8 @@ export async function getDailyEarnings() {
 }
 
 function formatDate(date: Date) {
-    return date.toISOString().split('T')[0];
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
 }

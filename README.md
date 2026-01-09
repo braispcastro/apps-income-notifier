@@ -1,6 +1,6 @@
-# AdMob Daily Income Notifier (Bun + Docker)
+# 📱 Apps Income Notifier
 
-A lightweight, automated notifier that fetches your daily Google AdMob earnings and sends a formatted report to your Telegram account. Designed to run efficiently on a Raspberry Pi using Bun and Docker.
+**Apps Income Notifier** is a lightweight tool designed to run on a Raspberry Pi (using Docker and Bun) that informs you daily of your total accumulated earnings from **Google AdMob** and **Apple App Store Connect**.
 
 ![AdMob Notifier](https://img.shields.io/badge/Runtime-Bun-black?style=for-the-badge&logo=bun)
 ![Docker](https://img.shields.io/badge/Deployment-Docker-blue?style=for-the-badge&logo=docker)
@@ -8,8 +8,8 @@ A lightweight, automated notifier that fetches your daily Google AdMob earnings 
 
 ## 🚀 Features
 
-- **Daily Reports**: Automatically fetches yesterday's earnings every day at a scheduled time.
-- **Telegram Notifications**: Beautifully formatted HTML messages.
+- **Dual Reporting**: Get your AdMob and App Store earnings in a single message.
+- **Telegram Notifications**: Receive a formatted message every morning.
 - **Auto-Currency Detection**: Automatically detects your account's currency (EUR, USD, etc.).
 - **Lightweight**: Built with Bun for minimal memory footprint (ideal for Raspberry Pi).
 - **Docker Ready**: Easy deployment with `docker-compose`.
@@ -20,6 +20,7 @@ A lightweight, automated notifier that fetches your daily Google AdMob earnings 
 - [Bun](https://bun.sh/) (for local development)
 - [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/) (for deployment)
 - A Google Cloud Project with **AdMob API** enabled.
+- An **App Store Connect API Key** (Issuer ID, Key ID, and .p8 file).
 - A **Telegram Bot** (via [@BotFather](https://t.me/botfather)).
 
 ## 📦 Setup
@@ -31,23 +32,28 @@ cd apps-income-notifier
 bun install
 ```
 
-### 2. Environment Configuration
-Copy the template and fill in your credentials:
-```bash
-cp .env.example .env
-```
+### 2. Environment Variables
+Create a `.env` file in the project root (use `.env.example` as a template):
 
-| Variable | Description |
-| --- | --- |
-| `AD_MOB_CLIENT_ID` | From Google Cloud Console |
-| `AD_MOB_CLIENT_SECRET` | From Google Cloud Console |
-| `AD_MOB_ACCOUNT_ID` | Your AdMob Publisher ID (`pub-XXX`) |
-| `AD_MOB_REFRESH_TOKEN` | Generated via Auth Helper |
-| `TELEGRAM_BOT_TOKEN` | From @BotFather |
-| `TELEGRAM_CHAT_ID` | Your Telegram User ID |
-| `CRON_SCHEDULE` | Cron expression (default: `0 8 * * *`) |
+#### Google AdMob
+- `AD_MOB_CLIENT_ID`: Your Google Cloud Client ID.
+- `AD_MOB_CLIENT_SECRET`: Your Google Cloud Client Secret.
+- `AD_MOB_REFRESH_TOKEN`: Generated via the authentication script (see below).
+- `AD_MOB_ACCOUNT_ID`: Your publisher ID (e.g., `pub-1234567890123456`).
 
-### 3. Generate Refresh Token
+#### Apple App Store Connect
+- `APP_STORE_ISSUER_ID`: From the "Users and Access -> Integrations" section.
+- `APP_STORE_KEY_ID`: Your API Key ID.
+- `APP_STORE_PRIVATE_KEY`: The content of the `.p8` file (including `\n` line breaks).
+- `APP_STORE_VENDOR_NUMBER`: Your Vendor ID (in "Payments and Financial Reports").
+
+#### Notifications and App
+- `TELEGRAM_BOT_TOKEN`: Token from @BotFather.
+- `TELEGRAM_CHAT_ID`: Your Telegram Chat ID.
+- `CRON_SCHEDULE`: Cron expression (default: `0 8 * * *` - 8:00 AM).
+- `DRY_RUN`: Set to `true` to test the delivery immediately.
+
+### 3. Generate AdMob Refresh Token
 Run the built-in helper to authorize your app and get the `REFRESH_TOKEN`:
 ```bash
 bun run auth
@@ -72,12 +78,13 @@ docker compose up -d
 
 - `src/index.ts`: Main entry point & scheduler.
 - `src/admob.ts`: AdMob API reporting logic.
+- `src/appstore.ts`: App Store Connect API reporting logic (JWT & GZIP handling).
 - `src/notifier.ts`: Telegram notification service.
 - `src/auth-helper.ts`: OAuth2 token generation utility.
 - `Dockerfile`: Multi-stage build for Bun.
 
 ## 🤝 Contributing
-Feel free to open issues or pull requests. Future plans include adding **App Store Connect** integration.
+Feel free to open issues or pull requests.
 
 ## 📜 License
 MIT
