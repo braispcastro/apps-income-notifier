@@ -27,7 +27,7 @@
 
 ### 1. Clone & Install
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/braispcastro/apps-income-notifier.git
 cd apps-income-notifier
 bun install
 ```
@@ -82,9 +82,3 @@ docker compose up -d
 - `src/notifier.ts`: Telegram notification service.
 - `src/auth-helper.ts`: OAuth2 token generation utility.
 - `Dockerfile`: Multi-stage build for Bun.
-
-## 🤝 Contributing
-Feel free to open issues or pull requests.
-
-## 📜 License
-MIT
