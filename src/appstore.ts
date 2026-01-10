@@ -39,13 +39,8 @@ export async function getDailyEarnings() {
         const day = String(targetDate.getDate()).padStart(2, '0');
         const reportDate = `${year}-${month}-${day}`;
 
-        // Adjust display date (Report Date - 1 Day) to match User Dashboard
-        const displayDateObj = new Date(targetDate);
-        displayDateObj.setDate(displayDateObj.getDate() - 1);
-        const dYear = displayDateObj.getFullYear();
-        const dMonth = String(displayDateObj.getMonth() + 1).padStart(2, '0');
-        const dDay = String(displayDateObj.getDate()).padStart(2, '0');
-        const displayDate = `${dYear}-${dMonth}-${dDay}`;
+        // Display date matches the report date (no offset needed as verified by user)
+        const displayDate = reportDate;
 
         const response = await axios.get('https://api.appstoreconnect.apple.com/v1/salesReports', {
             params: {
@@ -68,8 +63,7 @@ export async function getDailyEarnings() {
 
         const lines = decompressed.split('\n');
         if (lines.length < 2) {
-            return { earnings: '0.00', currency: '?', date: reportDate };
-            return { earnings: '0.00 USD', date: reportDate };
+            return { earnings: '0.00 EUR', date: displayDate };
         }
 
         // TSV Structure: The last columns usually contain quantity and price
@@ -79,15 +73,12 @@ export async function getDailyEarnings() {
         const header = headerLine.split('\t');
         const proceedsIndex = header.indexOf('Developer Proceeds');
         const currencyIndex = header.indexOf('Currency of Proceeds');
-        const unitsIndex = header.indexOf('Units');
-        const priceIndex = header.indexOf('Customer Price');
 
         if (proceedsIndex === -1) {
-            return { earnings: '0.00 USD', date: reportDate };
+            return { earnings: '0.00 EUR', date: displayDate };
         }
 
         const earningsByCurrency = new Map<string, number>();
-
 
         for (let i = 1; i < lines.length; i++) {
             const line = lines[i];
@@ -112,6 +103,44 @@ export async function getDailyEarnings() {
             return { earnings: '0.00 USD', date: displayDate };
         }
 
+        // Calculate total in USD
+        let totalUsd = 0;
+        let conversionFailed = false;
+        let rates: any = {};
+
+        try {
+            rates = await getExchangeRates();
+        } catch (e) {
+            console.error('Failed to fetch exchange rates, falling back to multi-currency display');
+            conversionFailed = true;
+        }
+
+        if (!conversionFailed) {
+            for (const [currency, amount] of earningsByCurrency.entries()) {
+                if (currency === 'USD') {
+                    totalUsd += amount;
+                } else {
+                    const rate = rates[currency];
+                    if (rate) {
+                        // Rate is USD based (e.g. 1 USD = X EUR)
+                        // To get USD from EUR: Amount / Rate
+                        totalUsd += amount / rate;
+                    } else {
+                        console.warn(`No exchange rate found for ${currency}`);
+                        conversionFailed = true; // Fallback if any currency is missing rate
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!conversionFailed) {
+            return {
+                earnings: `${totalUsd.toFixed(2)} USD`,
+                date: displayDate
+            };
+        }
+
         const formattedEarnings = Array.from(earningsByCurrency.entries())
             .map(([curr, amount]) => `${amount.toFixed(2)} ${curr}`)
             .join(' + ');
@@ -127,5 +156,14 @@ export async function getDailyEarnings() {
         }
         console.error('Error fetching App Store earnings:', errorData || error.message);
         throw error;
+    }
+}
+
+async function getExchangeRates() {
+    try {
+        const response = await axios.get('https://open.er-api.com/v6/latest/USD');
+        return response.data.rates;
+    } catch (error) {
+        throw new Error('Could not fetch exchange rates');
     }
 }

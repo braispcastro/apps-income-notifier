@@ -13,6 +13,7 @@ export async function sendNotification(message: string) {
 
   const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
 
+
   try {
     await axios.post(url, {
       chat_id: CHAT_ID,
