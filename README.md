@@ -9,8 +9,9 @@
 ## 🚀 Features
 
 - **Dual Reporting**: Get your AdMob and App Store earnings in a single message.
+- **Data Freshness**: Reports AdMob data from yesterday and App Store data from 2 days ago (to ensure availability).
 - **Telegram Notifications**: Receive a formatted message every morning.
-- **Auto-Currency Detection**: Automatically detects your account's currency (EUR, USD, etc.).
+- **Smart Currency**: AdMob reports in your account currency, while App Store earnings are automatically consolidated to USD.
 - **Lightweight**: Built with Bun for minimal memory footprint (ideal for Raspberry Pi).
 - **Docker Ready**: Easy deployment with `docker-compose`.
 - **Git Secure**: Pre-configured `.gitignore` to prevent sensitive credential leaks.
@@ -52,6 +53,7 @@ Create a `.env` file in the project root (use `.env.example` as a template):
 - `TELEGRAM_CHAT_ID`: Your Telegram Chat ID.
 - `CRON_SCHEDULE`: Cron expression (default: `0 8 * * *` - 8:00 AM).
 - `DRY_RUN`: Set to `true` to test the delivery immediately.
+- `TZ`: Timezone for the notification schedule (default: `Europe/Madrid`).
 
 ### 3. Generate AdMob Refresh Token
 Run the built-in helper to authorize your app and get the `REFRESH_TOKEN`:
