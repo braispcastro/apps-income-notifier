@@ -1,6 +1,6 @@
-# 📱 Apps Income Notifier
+# 📱 AdMob Income Notifier
 
-**Apps Income Notifier** is a lightweight tool designed to run on a Raspberry Pi (using Docker and Bun) that informs you daily of your total accumulated earnings from **Google AdMob** and **Apple App Store Connect**.
+**AdMob Income Notifier** is a lightweight tool designed to run on a Raspberry Pi (using Docker and Bun) that informs you daily of your total accumulated earnings from **Google AdMob**.
 
 ![AdMob Notifier](https://img.shields.io/badge/Runtime-Bun-black?style=for-the-badge&logo=bun)
 ![Docker](https://img.shields.io/badge/Deployment-Docker-blue?style=for-the-badge&logo=docker)
@@ -8,10 +8,9 @@
 
 ## 🚀 Features
 
-- **Dual Reporting**: Get your AdMob and App Store earnings in a single message.
-- **Data Freshness**: Reports AdMob data from yesterday and App Store data from 2 days ago (to ensure availability).
+- **Daily Reporting**: Get your AdMob earnings directly on Telegram.
+- **Data Freshness**: Reports AdMob data from yesterday.
 - **Telegram Notifications**: Receive a formatted message every morning.
-- **Smart Currency**: AdMob reports in your account currency, while App Store earnings are automatically consolidated to USD.
 - **Lightweight**: Built with Bun for minimal memory footprint (ideal for Raspberry Pi).
 - **Docker Ready**: Easy deployment with `docker-compose`.
 - **Git Secure**: Pre-configured `.gitignore` to prevent sensitive credential leaks.
@@ -21,7 +20,6 @@
 - [Bun](https://bun.sh/) (for local development)
 - [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/) (for deployment)
 - A Google Cloud Project with **AdMob API** enabled.
-- An **App Store Connect API Key** (Issuer ID, Key ID, and .p8 file).
 - A **Telegram Bot** (via [@BotFather](https://t.me/botfather)).
 
 ## 📦 Setup
@@ -41,12 +39,6 @@ Create a `.env` file in the project root (use `.env.example` as a template):
 - `AD_MOB_CLIENT_SECRET`: Your Google Cloud Client Secret.
 - `AD_MOB_REFRESH_TOKEN`: Generated via the authentication script (see below).
 - `AD_MOB_ACCOUNT_ID`: Your publisher ID (e.g., `pub-1234567890123456`).
-
-#### Apple App Store Connect
-- `APP_STORE_ISSUER_ID`: From the "Users and Access -> Integrations" section.
-- `APP_STORE_KEY_ID`: Your API Key ID.
-- `APP_STORE_PRIVATE_KEY`: The content of the `.p8` file (including `\n` line breaks).
-- `APP_STORE_VENDOR_NUMBER`: Your Vendor ID (in "Payments and Financial Reports").
 
 #### Notifications and App
 - `TELEGRAM_BOT_TOKEN`: Token from @BotFather.
@@ -80,7 +72,6 @@ docker compose up -d
 
 - `src/index.ts`: Main entry point & scheduler.
 - `src/admob.ts`: AdMob API reporting logic.
-- `src/appstore.ts`: App Store Connect API reporting logic (JWT & GZIP handling).
 - `src/notifier.ts`: Telegram notification service.
 - `src/auth-helper.ts`: OAuth2 token generation utility.
 - `Dockerfile`: Multi-stage build for Bun.
