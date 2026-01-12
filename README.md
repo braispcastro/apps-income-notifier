@@ -68,10 +68,18 @@ Run the notifier in the background using Docker:
 docker compose up -d
 ```
 
+### Updating the App
+To update to the latest version and rebuild the container:
+```bash
+chmod +x update.sh
+./update.sh
+```
+
 ## 📂 Project Structure
 
 - `src/index.ts`: Main entry point & scheduler.
 - `src/admob.ts`: AdMob API reporting logic.
 - `src/notifier.ts`: Telegram notification service.
 - `src/auth-helper.ts`: OAuth2 token generation utility.
+- `update.sh`: Shell script to update and rebuild the app.
 - `Dockerfile`: Multi-stage build for Bun.
