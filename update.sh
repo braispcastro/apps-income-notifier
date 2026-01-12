@@ -3,18 +3,18 @@
 # Update script for AdMob Income Notifier
 # This script pulls the latest changes from Git and rebuilds the Docker container.
 
-echo "🚀 Iniciando actualización..."
+echo "🚀 Starting update..."
 
 # Pull the latest changes
-echo "📥 Bajando últimos cambios de Git..."
+echo "📥 Pulling latest changes from Git..."
 git pull
 
 # Rebuild and restart the container
-echo "🏗️ Reconstruyendo y reiniciando contenedor..."
+echo "🏗️ Rebuilding and restarting container..."
 docker compose up -d --build
 
 # Optional: Clean up old images
-echo "🧹 Limpiando imágenes antiguas..."
+echo "🧹 Cleaning up old images..."
 docker image prune -f
 
-echo "✅ ¡Actualización completada con éxito!"
+echo "✅ Update completed successfully!"
