@@ -1,5 +1,5 @@
-# Use the official Bun image
-FROM oven/bun:latest as base
+# Use the official Bun image (alpine version for better compatibility with ARM/Raspberry Pi)
+FROM oven/bun:alpine as base
 WORKDIR /app
 
 # Disable CI mode to prevent forced frozen lockfile issues
