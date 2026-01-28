@@ -52,7 +52,10 @@ Run the built-in helper to authorize your app and get the `REFRESH_TOKEN`:
 ```bash
 bun run auth
 ```
-Follow the instructions in the terminal to authorize via your browser.
+1. Visit the URL provided in the terminal.
+2. Authorize the app.
+3. The browser will redirect to `http://127.0.0.1/?code=...` and likely show an error (**this is normal**).
+4. Copy the `code` value from the browser's address bar and paste it into the terminal.
 
 ## 🏃 Usage
 

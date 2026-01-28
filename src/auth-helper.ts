@@ -13,7 +13,7 @@ if (!CLIENT_ID || !CLIENT_SECRET) {
 const oauth2Client = new OAuth2Client(
     CLIENT_ID,
     CLIENT_SECRET,
-    'urn:ietf:wg:oauth:2.0:oob' // This is for "Desktop App" flow
+    'http://127.0.0.1' // Using loopback instead of 'urn:ietf:wg:oauth:2.0:oob' (deprecated)
 );
 
 const SCOPES = ['https://www.googleapis.com/auth/admob.readonly'];
@@ -26,13 +26,15 @@ const authUrl = oauth2Client.generateAuthUrl({
 
 console.log('🚀 Step 1: Visit this URL to authorize the app:');
 console.log('\n' + authUrl + '\n');
+console.log('💡 Note: After authorizing, the browser will redirect to http://127.0.0.1 and likely show an error (Site cannot be reached).');
+console.log('👉 This is NORMAL. Look at the browser address bar and copy the value of "code=" from the URL.\n');
 
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
 });
 
-rl.question('🚀 Step 2: Paste the code from the browser here: ', async (code) => {
+rl.question('🚀 Step 2: Paste the "code" from the final URL here: ', async (code) => {
     rl.close();
     try {
         const { tokens } = await oauth2Client.getToken(code);

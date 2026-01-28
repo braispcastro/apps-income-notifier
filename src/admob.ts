@@ -62,7 +62,15 @@ export async function getDailyEarnings() {
             currency: currencyCode
         };
     } catch (error: any) {
-        console.error('Error fetching AdMob report:', error.response?.data || error.message);
+        const errorData = error.response?.data;
+        console.error('Error fetching AdMob report:', errorData || error.message);
+
+        if (errorData?.error === 'invalid_grant' || error.message?.includes('invalid_grant')) {
+            console.error('\n🔑 ADMOB AUTHENTICATION FAILED!');
+            console.error('The refresh token in .env has expired or been revoked.');
+            console.error('Please run: bun run auth\n');
+        }
+
         throw error;
     }
 }
